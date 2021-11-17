@@ -1,32 +1,32 @@
 import chai from "chai";
 import request from "supertest";
-import api from "../../../../index";  // Express API application 
+import api from "../../../../index"; // Express API application
 
 const expect = chai.expect;
 
-const currentMovieId  = 24428
-const currentMovieTitle = "The Avengers"
-let newMovieId
+const currentMovieId = 24428;
+const currentMovieTitle = "The Avengers";
+let newMovieId;
 const newMovie = {
   backdrop_path: "/5Iw7zQTHVRBOYpA0V6z0yypOPZh.jpg",
   genres: [
     {
       id: 14,
-      name: "Fantasy"
+      name: "Fantasy",
     },
     {
       id: 12,
-      name: "Adventure"
+      name: "Adventure",
     },
     {
       id: 878,
-      name: "Science Fiction"
+      name: "Science Fiction",
     },
     {
       id: 28,
-      name: "Action"
-    }
-  ],        
+      name: "Action",
+    },
+  ],
   id: 181808,
   original_language: "en",
   original_title: "Star Wars: The Last Jedi",
@@ -39,10 +39,10 @@ const newMovie = {
   title: "Star Wars: The Last Jedi",
   video: false,
   vote_average: 7,
-  vote_count: 9692
+  vote_count: 9692,
 };
 
-describe('Movies endpoint',  () => {
+describe("Movies endpoint", () => {
   describe("GET /movies ", () => {
     it("should return the 2 movies and a status 200", (done) => {
       request(api)
@@ -60,6 +60,32 @@ describe('Movies endpoint',  () => {
           ]);
           done();
         });
+    });
+  });
+  describe("GET /movies/:id", () => {
+    describe("when the id is valid", () => {
+      it("should return the matching movie", () => {
+        return request(api)
+          .get(`/api/movies/${currentMovieId}`)
+          .set("Accept", "application/json")
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .then((res) => {
+            expect(res.body).to.have.property("title", currentMovieTitle);
+          });
+      });
+    });
+    describe("when the id is invalid", () => {
+      it("should return the NOT found message", () => {
+        return request(api)
+          .get("/api/movies/9999")
+          .set("Accept", "application/json")
+          .expect("Content-Type", /json/)
+          .expect({
+            message: "Unable to find movie with id: 9999.",
+            status: 404,
+          });
+      });
     });
   });
 });
