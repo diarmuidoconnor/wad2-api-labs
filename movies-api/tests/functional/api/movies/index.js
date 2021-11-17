@@ -97,7 +97,7 @@ describe("Movies endpoint", () => {
         .expect(201)
         .then((res) => {
           expect(res.body.title).equals(newMovie.title);
-          newMovieId = res.body.id;  // For later tests
+          newMovieId = res.body.id; // For later tests
         });
     });
     after(() => {
@@ -107,6 +107,54 @@ describe("Movies endpoint", () => {
         .then((res) => {
           expect(res.body).to.have.property("title", newMovie.title);
         });
+    });
+  });
+
+  describe("PUT /movies/:id ", () => {
+    describe("when the id is valid", () => {
+      it("should return a 200 status and the updated movie", () => {
+        return request(api)
+          .put("/api/movies/24428")
+          .send({
+            title: "The Updated Avengers",
+            poster_path: "/cezWGskPY5x7GaglTTRN4Fugfb8.jpg",
+            overview:
+              "When an unexpected enemy emerges and threatens global safety and security, Nick Fury, director of the international peacekeeping agency known as S.H.I.E.L.D., finds himself in need of a team to pull the world back from the brink of disaster. Spanning the globe, a daring recruitment effort begins!",
+            release_date: "2012-04-25",
+            genre_ids: [878, 28, 12],
+          })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.title).equals("The Updated Avengers");
+          });
+      });
+      after(() => {
+        return request(api)
+          .get(`/api/movies/24428`)
+          .expect(200)
+          .then((res) => {
+            expect(res.body).to.have.property("title", "The Updated Avengers");
+          });
+      });
+    });
+
+    describe("when the id is invalid", () => {
+      it("should return a 200 status and the updated movie", () => {
+        return request(api)
+          .put("/api/movies/9999")
+          .send({
+            title: "The Updated Avengers",
+            poster_path: "/cezWGskPY5x7GaglTTRN4Fugfb8.jpg",
+            overview:
+              "When an unexpected enemy emerges and threatens global safety and security, Nick Fury, director of the international peacekeeping agency known as S.H.I.E.L.D., finds himself in need of a team to pull the world back from the brink of disaster. Spanning the globe, a daring recruitment effort begins!",
+            release_date: "2012-04-25",
+            genre_ids: [878, 28, 12],
+          })
+          .expect({
+            message: "Unable to find Movie",
+            status: 404,
+          });
+      });
     });
   });
 });
