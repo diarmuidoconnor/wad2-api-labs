@@ -1,10 +1,16 @@
-import dotenv from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
-
 import moviesRouter from './api/movies';
+import loglevel from 'loglevel';
+import dotenv from 'dotenv';
 
 dotenv.config();
+
+if (process.env.NODE_ENV === 'test') {
+  loglevel.setLevel('warn')
+  } else {
+  loglevel.setLevel('info')
+  }
 
 const app = express();
 
@@ -16,7 +22,7 @@ app.use(bodyParser.urlencoded());
 app.use('/api/movies', moviesRouter);
 
 app.listen(port, () => {
-  console.info(`Server running at ${port}`);
+  loglevel.info(`Server running at ${port}`);
 });
 
 export default app;
