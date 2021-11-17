@@ -3,6 +3,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import moviesRouter from './api/movies';
+import './db';
+import './seedData'
 
 dotenv.config();
 
