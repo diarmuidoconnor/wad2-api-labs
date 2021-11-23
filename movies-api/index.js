@@ -3,9 +3,11 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import moviesRouter from './api/movies';
+import usersRouter from './api/users';
+import genresRouter from './api/genres';
+
 import './db';
 import './seedData'
-import usersRouter from './api/users';
 
 const errHandler = (err, req, res, next) => {
   /* if the error in development then send stack trace to display whole error,
@@ -27,6 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use('/api/movies', moviesRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/genres', genresRouter);
 app.use(errHandler);
 
 app.listen(port, () => {
