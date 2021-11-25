@@ -10,6 +10,7 @@ import './db';
 import './seedData'
 import session from 'express-session';
 import authenticate from './authenticate';
+import passport from './authenticate';
 
 const errHandler = (err, req, res, next) => {
   /* if the error in development then send stack trace to display whole error,
@@ -32,9 +33,10 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }));
+app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use('/api/movies', authenticate, moviesRouter);
+app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/genres', genresRouter);
 app.use(errHandler);
